@@ -18,6 +18,7 @@ HUNGER_RATE = 10
 BOREDOM_RATE = 5
 ENERGY_RATE = 2
 AGE_RATE = 10
+VISION_RATE = 60
 
 @dataclass
 class Creature:
@@ -128,7 +129,7 @@ class Creature:
 
     def can_see_thing(self, x, y) -> bool:
         d = ((x - self.x)**2 + (y - self.y)**2) ** 0.5
-        return d < 30
+        return d < VISION_RATE
 
     def go_to_thing(self, x, y, dt:float) -> float:
         dx = x - self.x

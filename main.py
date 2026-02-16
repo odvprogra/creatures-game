@@ -3,12 +3,15 @@ from world import World
 from simulation import Simulation
 from renderer import Renderer
 
+WORLD_W = 500
+WORLD_H = 500
+
 creatures = [
-    Creature(id=i, x=50, y=50, name=f"Creatura {i}")
+    Creature(id=i, x=WORLD_W / 2, y=WORLD_H / 2, name=f"Creatura {i}")
     for i in range(10)
 ]
 
-world = World(width=100, height=100, creatures=creatures)
+world = World(width=WORLD_W, height=WORLD_H, creatures=creatures)
 
 sim = Simulation(world)
 renderer = Renderer(world)

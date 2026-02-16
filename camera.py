@@ -1,9 +1,11 @@
 class Camera:
-    def __init__(self, base_scale: int = 8):
+    def __init__(self, base_scale: int = 8, screen_w: int = 800, screen_h: int = 800,
+                 world_w: int = 100, world_h: int = 100):
+        self.base_scale: int = base_scale
+        self.min_zoom: float = min(screen_w / (world_w * base_scale), 0.1)
+        self.zoom: float = 1.0
         self.offset_x: float = 0.0
         self.offset_y: float = 0.0
-        self.zoom: float = 1.0
-        self.base_scale: int = base_scale
 
     def world_to_screen(self, wx: float, wy: float) -> tuple[int, int]:
         sx = int((wx - self.offset_x) * self.zoom * self.base_scale)
@@ -18,7 +20,7 @@ class Camera:
     def zoom_at(self, mouse_sx: int, mouse_sy: int, factor: float):
         wx, wy = self.screen_to_world(mouse_sx, mouse_sy)
         self.zoom *= factor
-        self.zoom = max(0.2, min(self.zoom, 10.0))
+        self.zoom = max(self.min_zoom, min(self.zoom, 10.0))
         self.offset_x = wx - mouse_sx / (self.zoom * self.base_scale)
         self.offset_y = wy - mouse_sy / (self.zoom * self.base_scale)
 

@@ -18,9 +18,11 @@ class World:
     food: list[Food] = field(default_factory=list)
     
     def set_food(self):
+        if len(self.food) >= 200:
+            return
         if not random.randint(1, 10) == 1:
             return
-        
+
         x = random.randint(1, self.width)
         y = random.randint(1, self.height)
 

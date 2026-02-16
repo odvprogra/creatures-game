@@ -17,11 +17,12 @@ class Renderer:
     HUD_COLOR = (220, 220, 220)
     DEAD_COLOR = (80, 80, 80)
 
-    def __init__(self, world: World, scale: int = 8):
+    def __init__(self, world: World, scale: int = 8, screen_size: int = 800):
         self.world = world
-        self.camera = Camera(base_scale=scale)
-        self.width = world.width * scale
-        self.height = world.height * scale
+        self.width = screen_size
+        self.height = screen_size
+        self.camera = Camera(base_scale=scale, screen_w=self.width, screen_h=self.height,
+                             world_w=world.width, world_h=world.height)
 
         pygame.init()
         self.screen = pygame.display.set_mode((self.width, self.height))
@@ -101,15 +102,15 @@ class Renderer:
 
         return True, toggle_pause, speed_delta
 
+    def _on_screen(self, sx: int, sy: int, margin: int = 10) -> bool:
+        return -margin <= sx <= self.width + margin and -margin <= sy <= self.height + margin
+
     def draw(self, simulation: Simulation, step: int, paused: bool, sim_speed: int = 1):
         self.screen.fill(self.BG_COLOR)
 
         for c in simulation.world.creatures:
             sx, sy = self.camera.world_to_screen(c.x, c.y)
-
-            if c.is_death:
-                r = max(1, int(3 * self.camera.zoom))
-                pygame.draw.circle(self.screen, self.DEAD_COLOR, (sx, sy), r)
+            if not self._on_screen(sx, sy):
                 continue
 
             color = self._energy_color(c.energy)
@@ -118,6 +119,8 @@ class Renderer:
 
         for f in simulation.world.food:
             sx, sy = self.camera.world_to_screen(f.x, f.y)
+            if not self._on_screen(sx, sy):
+                continue
             r = max(1, int(2 * self.camera.zoom))
             pygame.draw.circle(self.screen, (255, 0, 0), (sx, sy), r)
 
